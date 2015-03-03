@@ -8,7 +8,7 @@ difference() {
 		cylinder(h=6, r1=21/2, r2=d/2, $fn=200);
 		translate([0,0,6]) cylinder(h=13-6, r=d/2, $fn=200);
 	}
-	translate([0,0,-1]) sechskant(d_flaeche = 17.4, h = 1+12);
+	translate([0,0,-1]) sechskant(sw = 17.4, h = 1+12);
 	translate([0,0,-1]) cylinder(h=15, r=12/2, $fn=100);
 }
 translate([0,0,13]) for (i = [1:4:16]) {

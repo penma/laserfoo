@@ -30,7 +30,7 @@ difference() {
 	// XXX: für Testfoo eine Mutter versenkbar
 	for (x = [+57/2, -57/2]) {
 		for (y = [-25/2, +25/2]) {
-			translate([x, y, -4.5]) sechskant(d_flaeche = 8.5, h = 10);
+			translate([x, y, -4.5]) sechskant(sw = 8.5, h = 10);
 		}
 	}
 
