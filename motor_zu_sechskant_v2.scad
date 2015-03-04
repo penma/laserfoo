@@ -2,6 +2,16 @@ use <sechskant.scad>;
 
 d = 24.5;
 d_welle = 5.1;
+sw_mutter = 17.4;
+d2_mutter = 21;
+
+h_kupplung=4; /* Höhe der Klauen der beiden äußeren Teile */
+h_zwischen=4; /* Höhe des Zwischenstücks */
+h_mutter=12;  /* Der in der Kupplung versenkte Teil der Mutter */
+h2_mutter=6;  /* Länge der Abschrägung */
+h_uebermutter=1; /* Stärke zwischen Mutter und Klauen */
+h_motor=6;    /* Das auf der Welle steckende Stück */
+h_uebermotor=1; /* Stärke zwischen Welle und Klauen */
 
 module zylindersegment(a1, a2, r, h) {
 	intersection() {
@@ -26,34 +36,42 @@ module kupplungsstern(n_seg, inc_seg, d_aussen, d_innen, h, a_extra=0) {
 	}
 }
 
-union() {
-difference() {
-	union() {
-		cylinder(h=6, r1=21/2, r2=d/2, $fn=200);
-		translate([0,0,6]) cylinder(h=13-6, r=d/2, $fn=200);
+module kupplung_mutter() {
+	difference() {
+		union() {
+			cylinder(h=h2_mutter, r1=d2_mutter/2, r2=d/2, $fn=200);
+			translate([0,0,h2_mutter]) cylinder(h=h_mutter+h_uebermutter-h2_mutter, r=d/2, $fn=200);
+		}
+		translate([0,0,-1]) sechskant(sw = sw_mutter, h = h_mutter+1);
+		translate([0,0,-1]) cylinder(h=h_mutter+h_uebermutter+2, r=12/2, $fn=100);
 	}
-	translate([0,0,-1]) sechskant(sw = 17.4, h = 1+12);
-	translate([0,0,-1]) cylinder(h=15, r=12/2, $fn=100);
-}
-translate([0,0,13]) kupplungsstern(n_seg=16, inc_seg=4, d_aussen=d, d_innen=14, h=4, a_extra=0, $fn=200);
+	translate([0,0,h_mutter+h_uebermutter]) kupplungsstern(n_seg=16, inc_seg=4, d_aussen=d, d_innen=14, h=h_kupplung, a_extra=0, $fn=200);
 }
 
-
-translate([30,0,0]) {
-difference() {
-	cylinder(h=6, r=d/2, $fn=200);
-	translate([0,0,5.7]) mirror([0,0,1]) cylinder(h=10, r=5.1/2, $fn=100);
-	translate([0,0,-0.1]) cylinder(h=1.5, r1=d_welle/2 + 0.5, r2=d_welle/2, $fn=100);
-}
-translate([0,0,6]) kupplungsstern(n_seg=16, inc_seg=4, d_aussen=d, d_innen=14, h=4, a_extra=0, $fn=200);
-}
-
-alol=2; // 2 for positive print with makerbot, 0 seems fine for silicone form
-!translate([60,0,0]){ difference() {
-	//translate([-20, -20, -2.1]) cube([40, 40, 6]); // to make negative form
-	union() {
-		kupplungsstern(n_seg=16, inc_seg=2, d_aussen=d, h=4, a_extra=alol, $fn=200);
-		cylinder(h=4, r=12/2, $fn=200);
+module kupplung_motor() {
+	difference() {
+		cylinder(h=h_motor+h_uebermotor, r=d/2, $fn=200);
+		translate([0,0,h_motor]) mirror([0,0,1]) cylinder(h=h_motor, r=d_welle/2, $fn=100);
+		translate([0,0,-0.1]) cylinder(h=1.5, r1=d_welle/2 + 0.5, r2=d_welle/2, $fn=100);
 	}
+	translate([0,0,h_motor+h_uebermotor]) kupplungsstern(n_seg=16, inc_seg=4, d_aussen=d, d_innen=14, h=h_kupplung, a_extra=0, $fn=200);
 }
+
+module kupplung_mitte(alol=2) {
+	/* alol=2 funktioniert ganz gut für ein Positiv mit dem Makerbot.
+	 * für eine Silikonform 0, sonst wirds zu klein
+	 */
+	kupplungsstern(n_seg=16, inc_seg=2, d_aussen=d, h=h_zwischen, a_extra=alol, $fn=200);
+	cylinder(h=h_zwischen, r=12/2, $fn=100);
 }
+
+module demo(explode=2) {
+	translate([0,0,-h_motor-h_uebermotor-explode]) rotate(360/16 + $t*360) kupplung_motor();
+	translate([0,0,h_zwischen+h_mutter+h_uebermutter+explode])
+		translate([0,-0.75,0]) rotate(3, [1,0,0])
+		rotate(-360/16 + $t*360) mirror([0,0,1]) kupplung_mutter();
+	/* 1.01, weil Renderkäfer */
+	color("red") scale(1.01) rotate($t*360) kupplung_mitte();
+}
+
+demo(1);
