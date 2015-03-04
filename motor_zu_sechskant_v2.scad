@@ -2,6 +2,17 @@ use <sechskant.scad>;
 
 d = 24.5;
 
+module zylindersegment(a1, a2, r, h) {
+	intersection() {
+		cylinder(h=h, r=r);
+		linear_extrude(height=3*h, center=true) polygon([
+			[0, 0],
+			[cos(a1) * r*2, sin(a1) * r*2],
+			[cos(a2) * r*2, sin(a2) * r*2]
+		]);
+	}
+}
+
 union() {
 difference() {
 	union() {
@@ -13,20 +24,9 @@ difference() {
 }
 translate([0,0,13]) for (i = [1:4:16]) {
 	difference() {
-		intersection() {
-			cylinder(h=4, r=d/2, $fn=200);
-			linear_extrude(height=4) polygon([
-				[0, 0],
-				[cos(360/16 * i) * 100, sin(360/16 * i) * 100],
-				[cos(360/16 * (i-1)) * 100, sin(360/16 * (i-1)) * 100]
-			]);
-		}
+		zylindersegment(a1 = 360/16 * (i-1), a2 = 360/16 * i, r=d/2, h=4, $fn=200);
 		translate([0,0,-1]) cylinder(h=10, r=14/2, $fn=100);
 	}
-}
-*difference() {
-	cylinder(h=13, r1=9/2, r2=12.5/2, $fn=50);
-	translate([0,0,-1]) cylinder(h=20, r1=7.5/2, r2=11/2, $fn=50);
 }
 }
 
@@ -39,14 +39,7 @@ difference() {
 }
 translate([0,0,6]) for (i = [1:4:16]) {
 	difference() {
-		intersection() {
-			cylinder(h=4, r=d/2, $fn=200);
-			linear_extrude(height=4) polygon([
-				[0, 0],
-				[cos(360/16 * i) * 100, sin(360/16 * i) * 100],
-				[cos(360/16 * (i-1)) * 100, sin(360/16 * (i-1)) * 100]
-			]);
-		}
+		zylindersegment(a1 = 360/16 * (i-1), a2 = 360/16 * i, r=d/2, h=4, $fn=200);
 		translate([0,0,-1]) cylinder(h=10, r=14/2, $fn=100);
 	}
 }
@@ -57,14 +50,10 @@ alol=2; // 2 for positive print with makerbot, 0 seems fine for silicone form
 	//translate([-20, -20, -2.1]) cube([40, 40, 6]); // to make negative form
 	union() {
 	for (i = [1:2:16]) {
-		intersection() {
-			cylinder(h=4, r=d/2, $fn=200);
-			linear_extrude(height=4) polygon([
-				[0, 0],
-				[cos(360/16 * i - alol) * 100, sin(360/16 * i - alol) * 100],
-				[cos(360/16 * (i-1) + alol) * 100, sin(360/16 * (i-1) + alol) * 100]
-			]);
-		}
+		zylindersegment(
+			a1 = 360/16 * (i-1) + alol,
+			a2 = 360/16 * i - alol,
+			r=d/2, h=4, $fn=200);
 	}
 	cylinder(h=4, r=12/2, $fn=100);
 	}
