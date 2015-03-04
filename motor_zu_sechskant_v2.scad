@@ -65,13 +65,20 @@ module kupplung_mitte(alol=2) {
 	cylinder(h=h_zwischen, r=12/2, $fn=100);
 }
 
-module demo(explode=2) {
-	translate([0,0,-h_motor-h_uebermotor-explode]) rotate(360/16 + $t*360) kupplung_motor();
-	translate([0,0,h_zwischen+h_mutter+h_uebermutter+explode])
+module demo_schraeg() {
+	translate([0,0,-h_motor-h_uebermotor-1]) rotate(360/16 + $t*360) kupplung_motor();
+	translate([0,0,h_zwischen+h_mutter+h_uebermutter+1])
 		translate([0,-0.75,0]) rotate(3, [1,0,0])
 		rotate(-360/16 + $t*360) mirror([0,0,1]) kupplung_mutter();
 	/* 1.01, weil Renderkäfer */
 	color("red") scale(1.01) rotate($t*360) kupplung_mitte();
 }
 
-demo(1);
+module demo(explode=2) {
+	translate([0,0,-h_motor-h_uebermotor-explode]) rotate(360/16 + $t*360) kupplung_motor();
+	translate([0,0,h_zwischen+h_mutter+h_uebermutter+explode]) rotate(-360/16 + $t*360) mirror([0,0,1]) kupplung_mutter();
+	/* 1.01, weil Renderkäfer */
+	color("red") scale(1.01) rotate($t*360) kupplung_mitte();
+}
+
+demo();
