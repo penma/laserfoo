@@ -7,8 +7,8 @@ d2_mutter = 21;
 
 h_kupplung=4; /* Höhe der Klauen der beiden äußeren Teile */
 h_zwischen=4; /* Höhe des Zwischenstücks */
-h_mutter=12;  /* Der in der Kupplung versenkte Teil der Mutter */
-h2_mutter=6;  /* Länge der Abschrägung */
+h_mutter=8;  /* Der in der Kupplung versenkte Teil der Mutter */
+h2_mutter=4;  /* Länge der Abschrägung */
 h_uebermutter=1; /* Stärke zwischen Mutter und Klauen */
 h_motor=6;    /* Das auf der Welle steckende Stück */
 h_uebermotor=1; /* Stärke zwischen Welle und Klauen */
